@@ -3,6 +3,8 @@ package api
 import (
 	db "github.com/AndrewLoveMei/simplebank/db/sqlc"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 type Server struct {
@@ -13,6 +15,12 @@ type Server struct {
 func NewServer(store *db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
+
+	//向gin注册我们自己编写的验证器
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("currency", validCurrency) //第一个参数是需要验证的参数,第二个参数是自定义的校验器
+	}
+
 	//Context很重要，我们在处理程序的时候，所做的一切都会影响到这个上下文。
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)

@@ -13,7 +13,7 @@ type transferRequest struct {
 	FromAccountId int64  `json:"from_account_id" binding:"required,min=1"`
 	ToAccountId   int64  `json:"to_account_id" binding:"required,min=1"`
 	Amount        int64  `json:"amount" binding:"required,gt=0"`
-	Currency      string `json:"currency" binding:"required,oneof=USD EUR CAD"`
+	Currency      string `json:"currency" binding:"required,currency"`
 }
 
 func (server *Server) createTransfer(ctx *gin.Context) {
@@ -31,7 +31,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		return
 	}
 
-	//货币currency需要将fromaccountid和toaccountid相比较
+	//货币currency需要将FromAccountId和ToAccountId相比较
 	arg := db.TransferTxParams{
 		FromAccountId: req.FromAccountId,
 		ToAccountId:   req.ToAccountId,
