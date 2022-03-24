@@ -3,6 +3,8 @@ package api
 import (
 	"database/sql"
 	db "github.com/AndrewLoveMei/simplebank/db/sqlc"
+	"github.com/lib/pq"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +34,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok { //因为外键约束而增加的条件
+			log.Println(pqErr.Code.Name())
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
