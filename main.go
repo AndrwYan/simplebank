@@ -23,7 +23,10 @@ func main() {
 
 	//建立服务
 	store := db.NewStore(conn)
-	server := api.NewServer(store)
+	server, err := api.NewServer(config, store)
+	if err != nil {
+		log.Fatal("can not create server", err)
+	}
 	err = server.Start(config.ServerAddress)
 	//致命日志
 	if err != nil {
