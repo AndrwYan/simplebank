@@ -2,14 +2,15 @@ package api
 
 import (
 	"fmt"
-	db "github.com/AndrewLoveMei/simplebank/db/sqlc"
-	"github.com/AndrewLoveMei/simplebank/db/util"
-	"github.com/AndrewLoveMei/simplebank/token"
+	db "github.com/AndrwYan/simplebank/db/sqlc"
+	"github.com/AndrwYan/simplebank/db/util"
+	"github.com/AndrwYan/simplebank/token"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )
 
+// Server server结构体中组合或者嵌入(在java中称作委托)
 type Server struct {
 	config     util.Config
 	store      *db.Store
@@ -43,13 +44,16 @@ func NewServer(config util.Config, store *db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	//Context很重要，我们在处理程序的时候，所做的一切都会影响到这个上下文。
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccount)
-	router.POST("/transfer", server.createTransfer)
+	//除了这两个接口不需要权限验证
 	router.POST("/users", server.createUser)
 	router.POST("users/login", server.loginUser)
+
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+	//Context很重要，我们在处理程序的时候，所做的一切都会影响到这个上下文。
+	authRoutes.POST("/accounts", server.createAccount)
+	authRoutes.GET("/accounts/:id", server.getAccount)
+	authRoutes.GET("/accounts", server.listAccount)
+	authRoutes.POST("/transfer", server.createTransfer)
 
 	//add router to router
 	server.router = router

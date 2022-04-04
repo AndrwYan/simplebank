@@ -2,7 +2,10 @@ package api
 
 import (
 	"database/sql"
-	db "github.com/AndrewLoveMei/simplebank/db/sqlc"
+	"errors"
+	db "github.com/AndrwYan/simplebank/db/sqlc"
+
+	"github.com/AndrwYan/simplebank/token"
 	"github.com/lib/pq"
 	"log"
 	"net/http"
@@ -12,7 +15,6 @@ import (
 
 //创建请求体
 type createAccountRequest struct {
-	Owner    string `json:"owner",binding:"required"`                  //这个字段是必须的
 	Currency string `json:"currency",binding:"required,oneof=USD EUR"` //前面的json文件代表这是绑定json
 }
 
@@ -25,9 +27,12 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
 
+	//获取授权
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	//字面量
 	arg := db.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 		Balance:  0,
 	}
@@ -74,6 +79,16 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	//获取授权
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	//将查到的user和授权中的api查看
+	if authPayload.Username != account.Owner {
+		err := errors.New("account doesn't belong to the authentication user")
+
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusAccepted, account)
 }
 
