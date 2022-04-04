@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"github.com/AndrewLoveMei/simplebank/api"
-	db "github.com/AndrewLoveMei/simplebank/db/sqlc"
-	"github.com/AndrewLoveMei/simplebank/db/util"
+	"github.com/AndrwYan/simplebank/api"
+	db "github.com/AndrwYan/simplebank/db/sqlc"
+	"github.com/AndrwYan/simplebank/db/util"
 	_ "github.com/lib/pq"
 	"log"
 )

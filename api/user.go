@@ -2,8 +2,9 @@ package api
 
 import (
 	"database/sql"
-	db "github.com/AndrewLoveMei/simplebank/db/sqlc"
-	"github.com/AndrewLoveMei/simplebank/db/util"
+	db "github.com/AndrwYan/simplebank/db/sqlc"
+	"github.com/AndrwYan/simplebank/db/util"
+
 	"github.com/lib/pq"
 	"log"
 	"net/http"

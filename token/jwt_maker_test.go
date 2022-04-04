@@ -1,7 +1,7 @@
 package token
 
 import (
-	"github.com/AndrewLoveMei/simplebank/db/util"
+	"github.com/AndrwYan/simplebank/db/util"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"

@@ -3,7 +3,7 @@ package api
 import (
 	"errors"
 	"fmt"
-	"github.com/AndrewLoveMei/simplebank/token"
+	"github.com/AndrwYan/simplebank/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
